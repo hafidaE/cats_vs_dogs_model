@@ -46,7 +46,7 @@ st.markdown("""
 @st.cache_resource
 def load_model():
     """Load the trained model"""
-    model_path = 'dogs_vs_cats_model.h5'
+    model_path = 'dogs_vs_cats_transfer_model.keras'
 
     # Try different model paths
     if os.path.exists(model_path):
@@ -112,7 +112,7 @@ def main():
     **Model Details:**
     - Architecture: Convolutional Neural Network (CNN) / Transfer Learning with VGG16
     - Training Dataset: 2000 images from Kaggle Dogs vs Cats competition
-    - Input Size: 150x150 pixels
+    - Input Size: 350x350 pixels
     """)
 
     # Load model
@@ -157,8 +157,8 @@ def main():
         </div>
         """, unsafe_allow_html=True)
 
-        # Confidence bar
-        st.progress(confidence)
+        # Confidence bar 
+        st.progress(float(confidence))
 
         # Additional info
         with st.expander("See confidence breakdown"):
@@ -176,7 +176,7 @@ def main():
         st.subheader("How it works")
         st.markdown("""
         1. **Upload** a JPG or PNG image of a dog or cat
-        2. The image is **preprocessed** and resized to 150x150 pixels
+        2. The image is **preprocessed** and resized to 350x350 pixels
         3. The CNN model **analyzes** the image features
         4. A **prediction** is made with confidence score
         """)
