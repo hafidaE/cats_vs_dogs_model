@@ -9,6 +9,7 @@ from tensorflow import keras
 from PIL import Image
 import numpy as np
 import os
+from huggingface_hub import hf_hub_download
 
 # Page configuration
 st.set_page_config(
@@ -45,21 +46,19 @@ st.markdown("""
 
 @st.cache_resource
 def load_model():
-    """Load the trained model"""
-    model_path = 'dogs_vs_cats_transfer_model.keras'
-
-    # Try different model paths
-    if os.path.exists(model_path):
-        model = keras.models.load_model(model_path)
-    elif os.path.exists('dogs_vs_cats_transfer_model.h5'):
-        model = keras.models.load_model('dogs_vs_cats_transfer_model.h5')
-    elif os.path.exists('dogs_vs_cats_cnn_model.h5'):
-        model = keras.models.load_model('dogs_vs_cats_cnn_model.h5')
-    else:
-        st.error("Model file not found! Please ensure a trained model (.h5) is in the app directory.")
+    """Load the trained model directly from Hugging Face Hub"""
+    try:
+        with st.spinner("Downloading model weights from Hugging Face... (This happens only once)"):
+            # This downloads the file securely and caches it on the Streamlit server
+            model_file = hf_hub_download(
+                repo_id="hafidaEr/dogs-vs-cats-vgg16", # e.g., "hafidat/dogs-vs-cats-vgg16"
+                filename="dogs_vs_cats_transfer_model.keras" # Change to .h5 if that's your extension
+            )
+            model = tf.keras.models.load_model(model_file)
+        return model
+    except Exception as e:
+        st.error(f"Error loading model from Hugging Face: {e}")
         return None
-
-    return model
 
 def preprocess_image(image):
     """Preprocess uploaded image for prediction"""
